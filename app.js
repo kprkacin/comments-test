@@ -16,6 +16,11 @@ const PERFORMER_URL = process.env.PERFORMER_URL;
 
 const CID = process.env.CID;
 
+console.log({
+  PERFORMER_URL,
+  CID,
+});
+
 const parentUrl = new URLSearchParams(window.location.search).get("parentUrl");
 const location = btoa(parentUrl);
 console.log(parentUrl);
