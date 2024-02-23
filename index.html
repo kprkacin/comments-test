@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+      tailwind.config = {
+        content: ["./index.html", "./**/*.{js,ts,jsx,tsx}"],
+        theme: {
+          extend: {
+            colors: {
+              clifford: "#da373d",
+            },
+          },
+        },
+      };
+    </script>
+    <style>
+      /* Works on Chrome, Edge, and Safari */
+      ::-webkit-scrollbar {
+        width: 12px; /* width of the entire scrollbar */
+      }
+
+      ::-webkit-scrollbar-track {
+        background: #282c34; /* color of the tracking area */
+      }
+
+      ::-webkit-scrollbar-thumb {
+        background-color: #4a5568; /* color of the scroll thumb */
+        border-radius: 6px; /* radius of the scroll thumb */
+      }
+    </style>
+    <title>K3 Comments</title>
+  </head>
+  <body class="bg-gray-900 text-gray-200 max-w-3xl mx-auto">
+    <div id="k3-comments" class="container mx-auto px-4 py-5">
+      <div
+        id="k3-loader"
+        class="fixed top-0 left-0 z-50 w-screen h-screen flex items-center justify-center"
+        style="background: rgba(0, 0, 0, 0.5); visibility: hidden"
+      >
+        <svg
+          class="animate-spin h-10 w-10 text-white"
+          xmlns="http://www.w3.org/2000/svg"
+          fill="none"
+          viewBox="0 0 24 24"
+        >
+          <circle
+            class="opacity-25"
+            cx="12"
+            cy="12"
+            r="10"
+            stroke="currentColor"
+            stroke-width="4"
+          ></circle>
+          <path
+            class="opacity-75"
+            fill="currentColor"
+            d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+          ></path>
+        </svg>
+      </div>
+      <div class="flex justify-between mb-4">
+        <h1 class="text-xl font-bold">Comments (20)</h1>
+        <p
+          class="bg-blue-100 w-fit text-blue-800 text-xs font-medium me-2 px-2.5 py-0.5 rounded dark:bg-blue-900 dark:text-blue-300"
+          id="k3-username"
+          style="display: none"
+        ></p>
+      </div>
+
+      <form id="k3-create-form" class="mb-4 hidden">
+        <label htmlFor="comment" class="sr-only"> Your comment </label>
+        <textarea
+          name="comment"
+          rows="6"
+          class="p-2 w-full text-sm text-gray-900 border-0 focus:ring-0 dark:text-white dark:placeholder-gray-400 dark:bg-gray-800 bg-gray-800"
+          placeholder="Write a comment..."
+          required
+        ></textarea>
+        <button
+          type="submit"
+          class="mt-4 border-2 rounded-md border-blue-500 hover:bg-blue-500 hover:opacity-80 text-white font-bold py-2 px-4 rounded"
+        >
+          Send comment
+        </button>
+      </form>
+      <p id="k3-status"></p>
+      <div
+        id="k3-auth-tabs"
+        class="text-sm w-full flex justify-end font-medium text-center text-gray-500"
+        style="display: none"
+      >
+        <div
+          class="flex w-fit flex-wrap -mb-px border-b border-gray-200 dark:text-gray-400 dark:border-gray-700"
+        >
+          <div class="me-2">
+            <a
+              href="#"
+              id="k3-signin-link"
+              style="border-color: #1e88e5; color: #1e88e5"
+              class="inline-block p-4 border-b-2 border-transparent rounded-t-lg hover:text-gray-600 hover:border-gray-300 dark:hover:text-gray-300"
+              >Sign In</a
+            >
+          </div>
+          <div class="me-2">
+            <a
+              href="#"
+              id="k3-signup-link"
+              style="border-color: transparent; color: #757575"
+              class="inline-block p-4 border-b-2 border-transparent rounded-t-lg hover:text-gray-600 hover:border-gray-300 dark:hover:text-gray-300"
+              aria-current="page"
+              >Sign Up</a
+            >
+          </div>
+        </div>
+      </div>
+      <form
+        id="k3-signin-form"
+        class="mb-4 flex space-x-5 items-end justify-between"
+      >
+        <div class="flex flex-col">
+          <label class=""> Username: </label>
+          <input class="k3-username mt-2 bg-gray-800 text-white rounded p-2" />
+        </div>
+        <div class="flex flex-col">
+          <label> Password: </label>
+          <input
+            class="k3-password mt-2 bg-gray-800 text-white rounded p-2"
+            type="password"
+          />
+        </div>
+
+        <button
+          type="submit"
+          class="mt-4 border-2 rounded-md border-blue-500 hover:bg-blue-500 hover:opacity-80 text-white font-bold py-2 px-4 rounded"
+        >
+          Sign In
+        </button>
+      </form>
+      <form
+        id="k3-signup-form"
+        class="mb-4 flex space-x-5 items-end justify-between"
+        style="display: none"
+      >
+        <div class="flex flex-col">
+          <label class="">
+            Name:
+            <input
+              class="k3-name mt-2 bg-gray-800 text-white rounded p-2 w-full"
+            />
+          </label>
+        </div>
+        <div class="flex flex-col">
+          <label>
+            Username:
+            <input
+              class="k3-username mt-2 bg-gray-800 text-white rounded p-2 w-full"
+            />
+          </label>
+        </div>
+        <div class="flex flex-col">
+          <label>
+            Password:
+            <input
+              class="k3-password mt-2 bg-gray-800 text-white rounded p-2 w-full"
+              type="password"
+            />
+          </label>
+        </div>
+        <button
+          type="submit"
+          class="mt-4 text-nowrap border-2 rounded-md border-blue-500 hover:bg-blue-500 hover:opacity-80 text-white font-bold py-2 px-4 rounded"
+        >
+          Sign Up
+        </button>
+      </form>
+      <div class="w-full flex justify-end mt-8 mb-4">
+        <select
+          id="k3-sort"
+          class="block w-fit px-4 py-2 rounded-md border-0 bg-white/5 py-1.5 shadow-sm ring-1 ring-inset ring-white/10 focus:ring-2 focus:ring-inset focus:ring-indigo-500 dark:text-white sm:text-sm sm:leading-6"
+        >
+          <option value="newest">Newest</option>
+          <option value="oldest">Oldest</option>
+        </select>
+      </div>
+      <ul id="k3-comments-list"></ul>
+    </div>
+    <script src="./app.js" type="module"></script>
+  </body>
+</html>
