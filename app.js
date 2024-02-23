@@ -11,6 +11,7 @@ const usernameEl = k3Container.querySelector("#k3-username");
 const signInButton = k3Container.querySelector("#k3-signin-link");
 const signUpButton = k3Container.querySelector("#k3-signup-link");
 const authTabs = k3Container.querySelector("#k3-auth-tabs");
+const commentsNumber = k3Container.querySelector("#k3-comments-num");
 
 const PERFORMER_URL = "https://operator-performer-01-bcg2tu5n4q-uc.a.run.app";
 
@@ -91,6 +92,9 @@ const updateComments = async () => {
   // `
   //   )
   //   .join("");
+
+  commentsNumber.textContent = comments?.length || 0;
+  console.log(comments?.length || 0);
   commentsList.innerHTML = comments
     ?.sort((a, b) =>
       sortBy === "newest"
@@ -195,7 +199,7 @@ signupForm.addEventListener("submit", async (e) => {
   updateForms();
 });
 
-signinForm.addEventListener("submit", (e) => {
+signinForm.addEventListener("submit", async (e) => {
   e.preventDefault();
 
   console.log("Signing in...");
@@ -203,7 +207,41 @@ signinForm.addEventListener("submit", (e) => {
   const name = signinForm.querySelector(".k3-username").value;
   const password = signinForm.querySelector(".k3-password").value;
 
-  localStorage.setItem("k3-auth", btoa(`${name}:${password}`));
+  const localAuth = btoa(`${name}:${password}`);
+
+  try {
+    const res = await fetch(`${PERFORMER_URL}/execute/${CID}`, {
+      method: "POST",
+      headers: {
+        "content-type": "application/json",
+        accept: "application/json",
+      },
+      body: JSON.stringify({
+        method: "POST",
+        url: `/api/comments?url=foo`,
+        body: btoa(JSON.stringify({ content: "login comment" })),
+        headers: {
+          Authorization: `Basic ${localAuth}`,
+        },
+      }),
+    });
+
+    if (res.status === 201 || res.status === 200) {
+      localStorage.setItem("k3-auth", localAuth);
+      statusEl.textContent = "";
+
+      updateForms();
+    } else {
+      throw res;
+    }
+  } catch (e) {
+    console.log("here2");
+    localStorage.removeItem("k3-auth");
+    statusEl.textContent = "Invalid credentials";
+    signinForm.querySelector(".k3-password").style.border = "1px solid red";
+    signinForm.querySelector(".k3-username").style.border = "1px solid red";
+  }
+
   updateForms();
 });
 
