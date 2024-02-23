@@ -12,9 +12,9 @@ const signInButton = k3Container.querySelector("#k3-signin-link");
 const signUpButton = k3Container.querySelector("#k3-signup-link");
 const authTabs = k3Container.querySelector("#k3-auth-tabs");
 
-const PERFORMER_URL = "https://operator-performer-01-bcg2tu5n4q-uc.a.run.app";
+const PERFORMER_URL = process.env.PERFORMER_URL;
 
-const CID = "QmVDc2xdUh9g9pfPvM1MqZzgFtSUnrzZhxHcbsNEVNTK9r";
+const CID = process.env.CID;
 
 const parentUrl = new URLSearchParams(window.location.search).get("parentUrl");
 const location = btoa(parentUrl);
