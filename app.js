@@ -27,6 +27,12 @@ if (localStorage.getItem("k3-auth")) {
   usernameEl.style.display = "block";
 }
 
+function isBase64(str) {
+  const base64Regex =
+    /^(?:[A-Za-z0-9+/]{4})*(?:[A-Za-z0-9+/]{2}==|[A-Za-z0-9+/]{3}=|[A-Za-z0-9+/]{4})$/;
+  return base64Regex.test(str);
+}
+
 const updateForms = () => {
   if (localStorage.getItem("k3-auth")) {
     signinForm.style.visibility = "hidden";
@@ -75,23 +81,6 @@ const updateComments = async () => {
   statusEl.textContent = "";
 
   const { comments = [] } = JSON.parse(atob(res.body));
-  // commentsList.innerHTML = comments
-  //   .map(
-  //     (comment) => `
-  //     <li class="k3-comment bg-gray-800 py-2 px-4 my-4 rounded-md shadow-lg">
-  //         <p class="k3-comment-author text-white font-bold">${
-  //           comment.displayName
-  //         } (${comment.name})</p>
-  //         <p class="k3-comment-time text-gray-400 text-sm"><time>${new Date(
-  //           comment.timestamp * 1000
-  //         ).toLocaleString()}</time></p>
-  //         <p class="k3-comment-content text-gray-300 mt-2">${
-  //           comment.content
-  //         }</p>
-  //     </li>
-  // `
-  //   )
-  //   .join("");
 
   commentsNumber.textContent = comments?.length || 0;
   console.log(comments?.length || 0);
@@ -123,7 +112,7 @@ const updateComments = async () => {
 
   </footer>
   <p>
-    ${comment.content}
+    ${isBase64(comment.content) ? atob(comment.content) : comment.content}
   </p>
 </article>
   `
@@ -257,7 +246,7 @@ createCommentForm.addEventListener("submit", async (e) => {
   statusEl.textContent = "Loading...";
   loader.style.visibility = "visible";
 
-  const content = createCommentForm.querySelector("textarea").value;
+  const content = btoa(createCommentForm.querySelector("textarea").value);
 
   console.log("Creating comment...", content);
   const rawRes = await fetch(`${PERFORMER_URL}/execute/${CID}`, {
